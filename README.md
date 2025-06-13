@@ -1,76 +1,200 @@
-# teste-gabriel-quarkus
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+# Teste Gabriel - Quarkus
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+Este é um projeto de exemplo construído com **Quarkus**, utilizando **Hibernate Panache**, **RESTEasy**, banco de dados **H2 em memória**, e **Java 17**. O projeto realiza o controle de filmes vencedores de prêmios, agrupando por produtores e calculando o menor e maior intervalo entre vitórias.
 
-## Running the application in dev mode
+## Tecnologias Utilizadas
 
-You can run your application in dev mode that enables live coding using:
+- [Quarkus 3.23.3](https://quarkus.io/)
+- Java 17
+- Maven
+- Hibernate ORM Panache
+- H2 Database
+- RESTEasy com Jackson
+- JUnit 5 e RestAssured (para testes)
 
-```shell script
-./mvnw quarkus:dev
+## Requisitos
+
+- Java 17+
+- Maven 3.8+
+
+## Como executar o projeto
+
+Clone este repositório:
+
+```bash
+git clone https://github.com/gabrielfrna/teste-gabriel-quarkus.git
+cd teste-gabriel-quarkus
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+### Executar em modo dev
 
-## Packaging and running the application
+Executar com Maven instalado:
 
-The application can be packaged using:
-
-```shell script
-./mvnw package
+```bash
+mvn quarkus:dev
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+A aplicação estará disponível em: [http://localhost:8080](http://localhost:8080)
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+## Executando os testes
 
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+```bash
+mvn test
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+## Endpoints disponíveis
 
-## Creating a native executable
+### Listar todos os Filmes
 
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
+```http
+GET /api/movie
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+#### Exemplo de retorno
+```json
+[
+    {
+        "id": 1,
+        "movieYear": 1980,
+        "title": "Can't Stop the Music",
+        "studios": "Associated Film Distribution",
+        "producers": "Allan Carr",
+        "winner": true
+    },
+    {
+        "id": 2,
+        "movieYear": 1980,
+        "title": "Cruising",
+        "studios": "Lorimar Productions, United Artists",
+        "producers": "Jerry Weintraub",
+        "winner": false
+    }
+]
 ```
 
-You can then execute your native executable with: `./target/teste-gabriel-quarkus-1.0.0-SNAPSHOT-runner`
+### Filtrar um filme pelo Id
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+```http
+GET /api/movie/{id}
+```
 
-## Related Guides
+#### Exemplo de retorno
+```json
+{
+    "id": 200,
+    "movieYear": 2018,
+    "title": "Robin Hood",
+    "studios": "Summit Entertainment",
+    "producers": "Jennifer Davisson and Leonardo DiCaprio",
+    "winner": false
+}
+```
 
-- JDBC Driver - H2 ([guide](https://quarkus.io/guides/datasource)): Connect to the H2 database via JDBC
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code for Hibernate ORM via the active record or the repository pattern
+### Cadastrar um Filme
 
-## Provided Code
+```http
+POST /api/movie
+```
 
-### Hibernate ORM
+#### Exemplo de requisão no Body
+```json
+{
+    "movieYear": 2025,
+    "title": "Filme 10",
+    "studios": "Estúdio 1",
+    "producers": "Producer 2",
+    "winner": true
+}
+```
 
-Create your first JPA entity
+### Editar um Filme
 
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
+```http
+PUT /api/movie/{id}
+```
 
-[Related Hibernate with Panache section...](https://quarkus.io/guides/hibernate-orm-panache)
+#### Exemplo de requisão no Body
+```json
+{
+    "id": 208,
+    "movieYear": 2010,
+    "title": "Filme após alterado",
+    "studios": "Estúdio alterado",
+    "producers": "Produtor também alterado",
+    "winner": false
+}
+```
 
+### Remover um Filme
 
-### RESTEasy JAX-RS
+```http
+DELETE /api/movie/{id}
+```
 
-Easily start your RESTful Web Services
+#### Exemplo de retorno
+```
+Filme removido com sucesso
+```
 
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+### Obter o produtor com maior intervalo entre dois prêmios consecutivos, e o que obteve dois prêmios mais rápido
+
+```http
+GET /api/movie/award-intervals
+```
+
+#### Exemplo de retorno
+```json
+{
+    "min": [
+        {
+            "followingWin": 1991,
+            "producer": "Joel Silver",
+            "interval": 1,
+            "previousWin": 1990
+        }
+    ],
+    "max": [
+        {
+            "followingWin": 2015,
+            "producer": "Matthew Vaughn",
+            "interval": 13,
+            "previousWin": 2002
+        }
+    ]
+}
+```
+
+## Comandos úteis
+
+### Gerar build:
+
+```bash
+mvn clean install
+```
+
+## Estrutura do Projeto
+
+```bash
+src
+├── main
+│   ├── java
+│   │   └── com.teste
+│   │       ├── model        # Entidades
+│   │       ├── repository   # Repositórios
+│   │       ├── resource     # Endpoints REST
+│   │       └── service      # Regras de negócio
+│   └── resources
+│       └── application.properties
+└── test
+    └── java
+        └── com.teste        # Testes de integração
+```
+
+---
+
+## Autor
+
+Gabriel — desenvolvimento para fins de teste técnico com Quarkus.
+
+---
