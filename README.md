@@ -1,7 +1,16 @@
 
 # Teste Gabriel - Quarkus
 
-Este é um projeto de exemplo construído com **Quarkus**, utilizando **Hibernate Panache**, **RESTEasy**, banco de dados **H2 em memória**, e **Java 17**. O projeto realiza o controle de filmes vencedores de prêmios, agrupando por produtores e calculando o menor e maior intervalo entre vitórias.
+Este é um projeto de exemplo construído com **Quarkus**, utilizando **Hibernate Panache**, **RESTEasy**, banco de dados **H2 em memória**, e **Java 17**. O projeto realiza o controle de filmes indicados e vencedores da categoria Pior Filme do Golden Raspberry Awards.
+
+Ao iniciar a aplicação, um arquivo CSV será lido automaticamente para popular o banco de dados com os filmes indicados.
+
+A aplicação disponibiliza endpoints REST para a manutenção dos registros de filmes e também para obter o produtor com maior intervalo entre dois prêmios consecutivos, e o que obteve dois prêmios mais rápido.
+
+#### Local do arquivo CSV
+```
+/src/main/resources/Movielist.csv
+```
 
 ## Tecnologias Utilizadas
 
