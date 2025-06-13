@@ -189,9 +189,10 @@ src
 ├── main
 │   ├── java
 │   │   └── com.teste
+│   │       ├── config       # Configurações
+│   │       ├── controller   # Endpoints REST
 │   │       ├── model        # Entidades
 │   │       ├── repository   # Repositórios
-│   │       ├── resource     # Endpoints REST
 │   │       └── service      # Regras de negócio
 │   └── resources
 │       └── application.properties
