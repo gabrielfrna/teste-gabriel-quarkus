@@ -142,7 +142,7 @@ public class MovieControllerTest {
                 .get("/api/movie/999999")
                 .then()
                 .statusCode(404)
-                .body(is("Filme não encontrato"));
+                .body(is("Filme não encontrado"));
     }
 
     @Test

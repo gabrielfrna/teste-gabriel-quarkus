@@ -1,8 +1,10 @@
 package com.teste.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.teste.model.Movie;
 import com.teste.service.MovieService;
@@ -23,16 +25,12 @@ public class MovieController {
     @Inject
     MovieService movieService;
 
+    private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
+
     @GET
-    public List<Movie> retrieveMovies() {
-        List<Movie> movies = new ArrayList<>();
-        try {
-            movies = movieService.findAllMovies();
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-        return movies;
+    public Response retrieveMovies() {
+        List<Movie> movies = movieService.findAllMovies();
+        return Response.ok(movies).build();
     }
 
     @GET
@@ -42,7 +40,7 @@ public class MovieController {
         if (movie != null) {
             return Response.ok(movie).build();
         } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("Filme não encontrato").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Filme não encontrado").build();
         }
     }
 
@@ -60,7 +58,7 @@ public class MovieController {
         Movie existingMovie = movieService.findMovieById(id);
 
         if (existingMovie == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Filme não encontrato").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Filme não encontrado").build();
         }
 
         existingMovie.setMovieYear(movie.getMovieYear());
@@ -80,7 +78,7 @@ public class MovieController {
         if (deleted) {
             return Response.ok("Filme removido com sucesso").build();
         } else {
-            return Response.status(Response.Status.NOT_FOUND).entity("Filme não encontrato").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Filme não encontrado").build();
         }
     }
 

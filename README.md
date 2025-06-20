@@ -21,6 +21,7 @@ A aplicação disponibiliza endpoints REST para a manutenção dos registros de 
 - H2 Database
 - RESTEasy com Jackson
 - JUnit 5 e RestAssured (para testes)
+- SLF4J (para logging)
 
 ## Requisitos
 
