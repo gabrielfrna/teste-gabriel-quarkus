@@ -23,19 +23,18 @@ public class MovieControllerTest {
         movie.setWinner(true);
 
         given()
-            .contentType(ContentType.JSON)
-            .body(movie)
-        .when()
-            .post("/api/movie")
-        .then()
-            .statusCode(201)
-            .body("movieYear", is(1999 ))
-            .body("title", is("Teste Filme"))
-            .body("studios", is("Teste Estúdio"))
-            .body("producers", is("Teste Produtores"))
-            .body("winner", is(true));
+                .contentType(ContentType.JSON)
+                .body(movie)
+                .when()
+                .post("/api/movie")
+                .then()
+                .statusCode(201)
+                .body("movieYear", is(1999))
+                .body("title", is("Teste Filme"))
+                .body("studios", is("Teste Estúdio"))
+                .body("producers", is("Teste Produtores"))
+                .body("winner", is(true));
     }
-
 
     @Test
     public void testGetMovieById() {
@@ -46,28 +45,27 @@ public class MovieControllerTest {
         movie.setProducers("Produtores do Teste Um");
         movie.setWinner(false);
 
-        Long id = 
-        given()
-            .contentType(ContentType.JSON)
-            .body(movie)
-        .when()
-            .post("/api/movie")
-        .then()
-            .statusCode(201)
-            .extract()
-            .jsonPath()
-            .getLong("id");
+        Long id = given()
+                .contentType(ContentType.JSON)
+                .body(movie)
+                .when()
+                .post("/api/movie")
+                .then()
+                .statusCode(201)
+                .extract()
+                .jsonPath()
+                .getLong("id");
 
         given()
-        .when()
-            .get("/api/movie/" + id)
-        .then()
-            .statusCode(200)
-            .body("movieYear", is(2025))
-            .body("title", is("Teste de Filme Um"))
-            .body("studios", is("Estúdio Teste Um"))
-            .body("producers", is("Produtores do Teste Um"))
-            .body("winner", is(false));
+                .when()
+                .get("/api/movie/" + id)
+                .then()
+                .statusCode(200)
+                .body("movieYear", is(2025))
+                .body("title", is("Teste de Filme Um"))
+                .body("studios", is("Estúdio Teste Um"))
+                .body("producers", is("Produtores do Teste Um"))
+                .body("winner", is(false));
     }
 
     @Test
@@ -80,27 +78,27 @@ public class MovieControllerTest {
         movie.setWinner(false);
 
         Movie created = given()
-            .contentType(ContentType.JSON)
-            .body(movie)
-        .when()
-            .post("/api/movie")
-        .then()
-            .statusCode(201)
-            .extract()
-            .as(Movie.class);
+                .contentType(ContentType.JSON)
+                .body(movie)
+                .when()
+                .post("/api/movie")
+                .then()
+                .statusCode(201)
+                .extract()
+                .as(Movie.class);
 
         created.setTitle("Filme novo");
         created.setWinner(true);
 
         given()
-            .contentType(ContentType.JSON)
-            .body(created)
-        .when()
-            .put("/api/movie/" + created.getId())
-        .then()
-            .statusCode(200)
-            .body("title", is("Filme novo"))
-            .body("winner", is(true));
+                .contentType(ContentType.JSON)
+                .body(created)
+                .when()
+                .put("/api/movie/" + created.getId())
+                .then()
+                .statusCode(200)
+                .body("title", is("Filme novo"))
+                .body("winner", is(true));
     }
 
     @Test
@@ -112,39 +110,56 @@ public class MovieControllerTest {
         movie.setProducers("Produtores do Teste Deletado");
         movie.setWinner(true);
 
-        Long id = 
-        given()
-            .contentType(ContentType.JSON)
-            .body(movie)
-        .when()
-            .post("/api/movie")
-        .then()
-            .statusCode(201)
-            .extract()
-            .jsonPath()
-            .getLong("id");
+        Long id = given()
+                .contentType(ContentType.JSON)
+                .body(movie)
+                .when()
+                .post("/api/movie")
+                .then()
+                .statusCode(201)
+                .extract()
+                .jsonPath()
+                .getLong("id");
 
         given()
-        .when()
-            .delete("/api/movie/" + id)
-        .then()
-            .statusCode(200)
-            .body(is("Filme removido com sucesso"));
+                .when()
+                .delete("/api/movie/" + id)
+                .then()
+                .statusCode(200)
+                .body(is("Filme removido com sucesso"));
 
         given()
-        .when()
-            .get("/api/movie/" + id)
-        .then()
-            .statusCode(404);
+                .when()
+                .get("/api/movie/" + id)
+                .then()
+                .statusCode(404);
     }
 
     @Test
     public void testGetNonexistentMovie() {
         given()
-        .when()
-            .get("/api/movie/999999")
-        .then()
-            .statusCode(404)
-            .body(is("Filme não encontrato"));
+                .when()
+                .get("/api/movie/999999")
+                .then()
+                .statusCode(404)
+                .body(is("Filme não encontrato"));
     }
+
+    @Test
+    public void testGetAwardIntervals() {
+        given()
+                .when()
+                .get("/api/movie/award-intervals")
+                .then()
+                .statusCode(200)
+                .body("min[0].producer", is("Joel Silver"))
+                .body("min[0].interval", is(1))
+                .body("min[0].previousWin", is(1990))
+                .body("min[0].followingWin", is(1991))
+                .body("max[0].producer", is("Matthew Vaughn"))
+                .body("max[0].interval", is(13))
+                .body("max[0].previousWin", is(2002))
+                .body("max[0].followingWin", is(2015));
+    }
+
 }
